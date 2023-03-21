@@ -5,6 +5,9 @@
 	import PictureFrame from '$lib/components/PictureFrame.svelte';
 	import Option from '$lib/components/Option.svelte';
 	import data from '$lib/data.json';
+	import mergeImages from 'merge-images';
+
+	// TODO: change option activation to only depend on store
 	let selectedAttribute = '';
 	let selectedOption = '';
 
@@ -13,12 +16,12 @@
 	}
 	function handleOptSelection(opt) {
 		selectedOption = opt;
-    parts.update(oldParts => { 
-			return {...oldParts, [selectedAttribute]: selectedOption}
-    })
+		parts.update((oldParts) => {
+			return { ...oldParts, [selectedAttribute]: selectedOption };
+		});
 	}
 
-	onMount(() => {
+	function randomize() {
 		parts.set({
 			accessories: data.accessories[Math.floor(Math.random() * data.accessories.length)],
 			backgrounds: data.backgrounds[Math.floor(Math.random() * data.backgrounds.length)],
@@ -29,6 +32,29 @@
 			mouth: data.mouth[Math.floor(Math.random() * data.mouth.length)],
 			neck: data.neck[Math.floor(Math.random() * data.neck.length)]
 		});
+	}
+
+	function download() {
+		mergeImages([
+			`/alpaca/backgrounds/${$parts.backgrounds}.png`,
+			`/alpaca/ears/${$parts.ears}.png`,
+			`/alpaca/hair/${$parts.hair}.png`,
+			`/alpaca/leg/${$parts.leg}.png`,
+			`/alpaca/neck/${$parts.neck}.png`,
+			`/alpaca/nose.png`,
+			`/alpaca/accessories/${$parts.accessories}.png`,
+			`/alpaca/eyes/${$parts.eyes}.png`,
+			`/alpaca/mouth/${$parts.mouth}.png`
+		]).then((b64) => {
+			const downloadLink = document.createElement('a');
+			downloadLink.href = b64;
+			downloadLink.download = 'Coolpaka.png';
+			downloadLink.click();
+		});
+	}
+
+	onMount(() => {
+		randomize();
 	});
 </script>
 
@@ -39,9 +65,14 @@
 		<div>
 			<PictureFrame />
 		</div>
-		<div class="flex flex-row justify-center mt-5">
-			<button class="bg-white rounded-md px-10 py-4 font-medium mx-4">🔀 Random</button>
-			<button class="bg-white rounded-md px-10 py-4 font-medium mx-4">🖼️ Download</button>
+		<div class="flex flex-row justify-start mt-5">
+			<button class="bg-white rounded-md px-10 py-4 font-medium mx-4" on:click={randomize}
+				>🔀 Random</button
+			>
+			<button
+				class="bg-white rounded-md px-10 py-4 font-medium mx-4"
+				on:click={download}>🖼️ Download</button
+			>
 		</div>
 	</div>
 	<div class="flex flex-col w-1/2">
@@ -63,7 +94,7 @@
 					<Option title={option} on:click={() => handleOptSelection(option)} {selectedOption} />
 				{/each}
 			{:else}
-						<p>First pick an accessory</p>
+				<p>First pick an accessory</p>
 			{/if}
 		</div>
 	</div>
