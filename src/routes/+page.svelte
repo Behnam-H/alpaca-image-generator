@@ -1,4 +1,6 @@
 <script>
+	// @ts-nocheck
+
 	import { onMount } from 'svelte';
 	import { parts } from '../stores';
 	import Nav from '$lib/components/Nav.svelte';
@@ -69,9 +71,8 @@
 			<button class="bg-white rounded-md px-10 py-4 font-medium mx-4" on:click={randomize}
 				>🔀 Random</button
 			>
-			<button
-				class="bg-white rounded-md px-10 py-4 font-medium mx-4"
-				on:click={download}>🖼️ Download</button
+			<button class="bg-white rounded-md px-10 py-4 font-medium mx-4" on:click={download}
+				>🖼️ Download</button
 			>
 		</div>
 	</div>

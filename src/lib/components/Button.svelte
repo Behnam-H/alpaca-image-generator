@@ -1,8 +1,8 @@
 <script>
-  let icon = ''
-  let text = ''
+	let icon = '';
+	let text = '';
 </script>
 
 <button>
-  {text}
+	{text}
 </button>
